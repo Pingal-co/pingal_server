@@ -2,7 +2,11 @@ defmodule PingalServer.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", PingalServer.RoomChannel
+  channel "thought:*", PingalServer.ThoughtChannel
+  channel "room:*", PingalServer.RoomChannel
+  channel "network:*", PingalServer.NetworkChannel
+  channel "app:*", PingalServer.AppChannel
+
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
