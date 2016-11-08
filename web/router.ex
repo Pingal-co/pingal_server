@@ -26,5 +26,6 @@ defmodule PingalServer.Router do
      resources "/networks", NetworkController, except: [:new, :edit]
      resources "/rooms", RoomController, except: [:new, :edit]
      resources "/thoughts", ThoughtController, except: [:new, :edit]
+     resources "/apps", AppController, except: [:new, :edit]
    end
 end
