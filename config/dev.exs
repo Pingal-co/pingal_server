@@ -36,8 +36,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :pingal_server, PingalServer.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "rohit",
+  password: "Pingal123",
   database: "pingal_server_dev",
   hostname: "localhost",
   pool_size: 10
