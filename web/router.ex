@@ -25,5 +25,6 @@ defmodule PingalServer.Router do
      pipe_through :api
      resources "/networks", NetworkController, except: [:new, :edit]
      resources "/rooms", RoomController, except: [:new, :edit]
+     resources "/thoughts", ThoughtController, except: [:new, :edit]
    end
 end
