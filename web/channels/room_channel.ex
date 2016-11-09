@@ -3,7 +3,7 @@ defmodule PingalServer.RoomChannel do
   alias PingalServer.Presence
   alias PingalServer.User
   alias PingalServer.Room
-  alias PingalServer.Network
+  # alias PingalServer.Network
   alias PingalServer.Slide
   alias PingalServer.Event
   require Logger
@@ -67,6 +67,7 @@ defmodule PingalServer.RoomChannel do
 
   def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
+      Logger.debug "room:#{inspect(room_id)} message: #{inspect(payload)}"
       send(self(),:after_join)
       {:ok, socket}
     else
@@ -128,6 +129,8 @@ defmodule PingalServer.RoomChannel do
   end
 
   def handle_in("update:page" = event, message, socket) do
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
+    
     address = Map.get(message, "address")
     room_params = %{id: address.page.id,
                     name: address.page.name,
@@ -180,8 +183,10 @@ defmodule PingalServer.RoomChannel do
 
    # find apps around me in a category
   def handle_in("find:apps" = event, message, socket) do
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
+    
     # location query on network
-    {:noreply, socket}
+      {:noreply, socket}
   end
 
   # Channels can be used in a request/response fashion
