@@ -36,7 +36,7 @@ defmodule PingalServer.Slide do
 
   def get_slides do
     query = from s in Slide,
-      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id, team_id: s.team_id}
+      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id}
 
     query
     |> Repo.all
@@ -44,7 +44,7 @@ defmodule PingalServer.Slide do
 
   def get_slides(:room, room_id) do
     query = from s in Slide,
-      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id, team_id: s.team_id},
+      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id},
       where: s.room_id == ^room_id
 
     query
@@ -53,7 +53,7 @@ defmodule PingalServer.Slide do
 
   def get_slides(:user, user_id) do
     query = from s in Slide,
-      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id, team_id: s.team_id},
+      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id},
       where: s.user_id == ^user_id
 
     query
