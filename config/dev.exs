@@ -40,7 +40,7 @@ config :pingal_server, PingalServer.Repo,
   password: "Pingal123",
   database: "pingal_server_dev",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 10,
   extensions: [{Geo.PostGIS.Extension, library: Geo}]
 
 # configure elastic search client
