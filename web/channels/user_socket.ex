@@ -4,6 +4,7 @@ defmodule PingalServer.UserSocket do
   ## Channels
   channel "thought:*", PingalServer.ThoughtChannel
   channel "room:*", PingalServer.RoomChannel
+  channel "user:*", PingalServer.UserChannel
   channel "network:*", PingalServer.NetworkChannel
   channel "app:*", PingalServer.AppChannel
 
@@ -23,6 +24,11 @@ defmodule PingalServer.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+
+  def connect(%{"user" => user}, socket) do
+    {:ok, assign(socket, :user, user)}
+  end
+  
   def connect(_params, socket) do
     {:ok, socket}
   end
