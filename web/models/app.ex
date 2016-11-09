@@ -1,5 +1,6 @@
 defmodule PingalServer.App do
   use PingalServer.Web, :model
+  alias PingalServer.App
 
   schema "apps" do
     field :name, :string

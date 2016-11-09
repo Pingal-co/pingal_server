@@ -1,5 +1,6 @@
 defmodule PingalServer.Device do
   use PingalServer.Web, :model
+  alias PingalServer.Device
 
   schema "devices" do
     field :device, :string

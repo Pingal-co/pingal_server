@@ -1,5 +1,6 @@
 defmodule PingalServer.Network do
   use PingalServer.Web, :model
+  alias PingalServer.Network
 
   schema "networks" do
     field :name, :string

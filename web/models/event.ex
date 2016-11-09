@@ -1,5 +1,6 @@
 defmodule PingalServer.Event do
   use PingalServer.Web, :model
+  alias PingalServer.Event
 
   schema "events" do
     field :event, :string
