@@ -1,10 +1,11 @@
 defmodule PingalServer.UserChannel do
   use PingalServer.Web, :channel
-  alias PingalServer.Presence
+ # alias PingalServer.Presence
   alias PingalServer.User
   alias PingalServer.Room
-  alias PingalServer.UserLocation
-  alias PingalServer.Device
+  alias PingalServer.Slide
+  # alias PingalServer.UserLocation
+  # alias PingalServer.Device
   alias PingalServer.Thought
   require Logger
 
