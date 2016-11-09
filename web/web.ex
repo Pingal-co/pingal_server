@@ -23,6 +23,7 @@ defmodule PingalServer.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+      alias PingalServer.Repo
     end
   end
 
