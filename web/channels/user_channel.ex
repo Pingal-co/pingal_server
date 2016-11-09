@@ -42,7 +42,7 @@ defmodule PingalServer.UserChannel do
   """
 
   def join("user:" <> user_id, payload, socket) do
-    Logger.debug "#{inspect(payload)}"
+    Logger.debug "user #{inspect(user_id)} payload: #{inspect(payload)}"
 
     if authorized?(payload) do
       send(self(),:after_join)
@@ -53,7 +53,7 @@ defmodule PingalServer.UserChannel do
 
   end
 
-  def handle_info("after_join" = event, socket) do
+  def handle_info("after_join", socket) do
     # load user rooms |> broadcast
     slides = find_user_slides(socket)
     broadcast! socket, "user:slides", %{slides: slides}
@@ -100,40 +100,48 @@ defmodule PingalServer.UserChannel do
    # update user data
   def handle_in("update:user" = event, message, socket) do
     # user data to update (get everything from message)
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
     user = Map.get(message, "user")
     params = %{ id: user.id,
                 name: user.name,
                 avatar: user.avatar
               }
     User.update_user(params)
+    # send a confirmation back to user on user channel
     {:noreply, socket}
   end
 
   # list users around me
   def handle_in("find:users_location" = event, message, socket) do
     # location query on users
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
+ 
     {:noreply, socket}
   end
 
   # list rooms around me 
   def handle_in("find:rooms_location" = event, message, socket) do
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
     # location query on pages
     {:noreply, socket}
   end
 
   # list networks around me
   def handle_in("find:networks_location" = event, message, socket) do
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
     # location query on network
     {:noreply, socket}
   end
 
   # find room by room name
     def handle_in("find:room" = event, message, socket) do
+      Logger.debug "#{inspect(event)} message: #{inspect(message)}"
       {:noreply, socket}
     end
 
   # find rooms in networks by name
   def handle_in("find:network" = event, message, socket) do
+    Logger.debug "#{inspect(event)} message: #{inspect(message)}"
     {:noreply, socket}
   end
 
