@@ -1,5 +1,6 @@
 defmodule PingalServer.Thought do
   use PingalServer.Web, :model
+  import Geo.PostGIS
 
   schema "thoughts" do
     field :thought, :string

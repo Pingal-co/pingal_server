@@ -26,6 +26,7 @@ defmodule PingalServer.User do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified])
+    |> validate_required([])
 
   end
 
