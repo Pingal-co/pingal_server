@@ -42,3 +42,6 @@ config :pingal_server, PingalServer.Repo,
   hostname: "localhost",
   pool_size: 10
   extensions: [{Geo.PostGIS.Extension, library: Geo}]
+
+# configure elastic search client
+config :tirexs, :uri, "http://127.0.0.1:9200"
