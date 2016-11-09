@@ -41,3 +41,4 @@ config :pingal_server, PingalServer.Repo,
   database: "pingal_server_dev",
   hostname: "localhost",
   pool_size: 10
+  extensions: [{Geo.PostGIS.Extension, library: Geo}]
