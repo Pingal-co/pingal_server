@@ -88,7 +88,7 @@ defmodule PingalServer.UserChannel do
       user: socket.assigns.user,
       body: Map.get(message, "text"),
       room: socket.topic,
-      params: %{slide_id: slide.id}
+      params: %{slide_id: slide.id},
       timestamp: :os.system_time(:milli_seconds)
     }
 
