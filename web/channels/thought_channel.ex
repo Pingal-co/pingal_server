@@ -1,5 +1,38 @@
 defmodule PingalServer.ThoughtChannel do
   use PingalServer.Web, :channel
+  alias PingalServer.Presence
+  alias PingalServer.User
+  alias PingalServer.Room
+  alias PingalServer.UserLocation
+  alias PingalServer.Device
+  alias PingalServer.Thought
+  require Logger
+
+  @moduledoc """
+      We should be able to suggest users of rooms and users along this channel (e.g. live updates, polls, queries).
+  
+      Feature(s): 
+        - User Thought Input 
+        - Thought Recommendations 
+     
+      Queries:
+        - Insert a thought
+        - Insert user, location, device, any other info from the client
+        - Find room by thought
+        - Find users by thought
+        
+      Events:
+          - add:thought  
+
+      To do:
+         - recall: find people and bots interested in category;
+         - precision: rank them by location distance, filter by presence
+         - broadcast to a list of people and bots
+         - build user interest index:
+         - given a thought, predict a sub:class(es) or sub:tag(s) in the category and update the user interest index
+         - given the slides, update the user index
+
+    """
 
   def join("thought:lobby", payload, socket) do
     if authorized?(payload) do
@@ -9,6 +42,78 @@ defmodule PingalServer.ThoughtChannel do
     end
   end
 
+  # join the room, record the event
+  def join("thought:" <> category, payload, socket) do
+     Logger.debug "#{inspect(payload)}"
+
+    if authorized?(payload) do
+      socket = assign(socket, :params, %{category: category})
+      #room_user = Event.insert_event(%{name: "view", user_id: payload.user_id, room_id: payload.room_id})
+      send(self(),:after_join)
+      {:ok, socket}
+    else
+      {:error, %{reason: "unauthorized"}}
+    end
+  end
+
+  # track and add presence based on category and location
+  def handle_info(:after_join, socket) do
+   
+    Presence.track(socket, socket.assigns.user, %{
+      online_at: :os.system_time(:milli_seconds),
+      category: socket.assigns.params.category
+      })
+    push socket, "presence:category", Presence.list(socket)
+
+    {:noreply, socket}
+  end
+
+
+# add a thought
+  def handle_in("add:thought" = event, message, socket) do
+    Logger.debug "event: #{inspect(event)}"
+    Logger.debug "message: #{inspect message}"
+   
+    # get user from user_hash or device_info 
+    user = insert_user(message)
+
+    # insert thought
+    thought = insert_thought(message, user)
+
+    # recall: find people and bots interested in category;
+    # precision: rank them by distance
+    # find users in thoughts_table who had thoughts in a category and in a given radius and order_by timestamp and distance
+
+    temporary_friends = invite_users(thought)
+    Logger.debug "temporary friends: #{inspect(temporary_friends)}"
+    
+    # get a similar room topic
+    %{id: room_id, name: room_name} = get_room(thought)   
+  
+    # assign user and room id to socket
+    socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar})
+    socket = assign(socket, :params, %{room_id: room_id, room_name: room_name})
+    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
+
+    # push to socket
+    broadcast! socket, event, %{
+      user: socket.assigns.user,
+      body: message["thought"],
+      params: socket.assigns.params,
+      timestamp: :os.system_time(:milli_seconds)
+    }
+
+     # We should do these steps in a async way!!
+    # insert location
+    insert_location(message, user)
+
+    # insert device info
+    insert_device(message, user)
+
+
+    {:noreply, socket}
+
+  end
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   def handle_in("ping", payload, socket) do
@@ -21,6 +126,109 @@ defmodule PingalServer.ThoughtChannel do
     broadcast socket, "shout", payload
     {:noreply, socket}
   end
+
+def insert_user(message) do
+     device_info = message["device_info"]
+     params = %{
+          device: device_info["unique_id"] ,
+          hash: message["user_hash"]
+    }
+    Logger.debug "params: #{inspect(params)}"
+    user = User.get_user(params.device)
+    cond do
+      user == nil -> User.insert_user(%{name: params.device, hash: params.hash})
+      true -> user
+    end
+  end
+
+  def insert_location(message, user) do
+    location = message["location"]
+    latitude = location["latitude"]
+    longitude = location["longitude"]
+    params = %{
+          user_id: user.id,
+          geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
+    }
+    Logger.debug "params: #{inspect(params)}"
+    # need to be in a Geo Structure
+    UserLocation.insert_location(params)
+  end
+
+  def insert_thought(message, user) do
+    location = message["location"]
+    latitude = location["latitude"]
+    longitude = location["longitude"]
+    params = %{
+          thought: message["thought"],
+          category: message["category"],
+          channel: "thought:lobby",
+          user_id: user.id,
+          geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
+          } 
+    Thought.insert_thought(params)
+  end
+
+  def insert_device(message, user) do
+    device_info = message["device_info"]
+    params = %{
+          user_id: user.id,
+          device: device_info["unique_id"],
+          brand: device_info["brand"],
+           name: device_info["name"],
+           user_agent: device_info["user_agent"],
+           locale: device_info["locale"],
+           country: device_info["country"],
+
+    }
+    Logger.debug "device params: #{inspect(params)}"
+
+    user_device = Device.get_device(params.device)
+    cond do
+      user_device == nil -> Device.insert_device(params)
+      true -> user_device
+    end
+  end
+
+  def invite_users(thought) do
+    Thought.get_users(:location,thought)
+    #users = Thought.get_users(thought)
+    # push to all these users
+  #  for user <- users do
+  #   notify on their user channels
+  #    broadcast! socket, "add:thought", %{
+  #      user: socket.assigns.user,
+  #      body: thought,
+  #      params: socket.assigns.params,
+  #      timestamp: :os.system_time(:milli_seconds)
+  #    }
+  #  end
+  end
+
+  def get_room(thought) do
+    # check if the room of same name or similar rooms exists
+    name = String.trim(thought.thought)
+    params = %{
+      name: name,
+      body: name,
+      category: thought.category,
+      public: true,
+      sponsored: false,
+      host_id: thought.user_id,
+      network_id: 1,
+    }
+    Logger.debug "device params: #{inspect(params)}"
+    room = Room.get_room(:similar, name)
+    cond do
+      room == nil or room == [] -> 
+        Logger.debug "no similar room, creating a new room"
+        %{id: room_id, name: room_name} = Room.insert_room(params)
+      true -> 
+        Logger.debug "found room"
+        %{id: room_id, name: room_name} = room
+      # false: insert and return a new room id with the thoguht
+    end
+  end
+
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
