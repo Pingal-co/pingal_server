@@ -25,3 +25,17 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: PingalServer.User,
+  repo: PingalServer.Repo,
+  module: PingalServer,
+  logged_out_url: "/",
+  email_from: {"Your Name", "yourname@example.com"},
+  opts: [:confirmable, :rememberable, :registerable, :invitable, :authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token]
+
+config :coherence, PingalServer.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Sendgrid,
+  api_key: "your api key here"
+# %% End Coherence Configuration %%
