@@ -12,6 +12,8 @@ defmodule PingalServer do
       supervisor(PingalServer.Repo, []),
       # Start the endpoint when the application starts
       supervisor(PingalServer.Endpoint, []),
+      # presence
+      supervisor(PingalServer.Presence, []),
       # Start your own worker by calling: PingalServer.Worker.start_link(arg1, arg2, arg3)
       # worker(PingalServer.Worker, [arg1, arg2, arg3]),
     ]
