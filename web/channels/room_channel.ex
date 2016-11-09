@@ -142,7 +142,8 @@ defmodule PingalServer.RoomChannel do
                   }
 
     room = Room.update_room(room_params)
-
+    Logger.debug "#{inspect(room)}"
+    
   end
 
   # add a room
