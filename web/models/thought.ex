@@ -1,5 +1,6 @@
 defmodule PingalServer.Thought do
   use PingalServer.Web, :model
+   alias PingalServer.Thought
   import Geo.PostGIS
 
   schema "thoughts" do
