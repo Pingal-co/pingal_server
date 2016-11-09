@@ -18,7 +18,7 @@ defmodule PingalServer.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {PingalServer, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:coherence, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :tirexs]]
   end
 
@@ -40,7 +40,8 @@ defmodule PingalServer.Mixfile do
      {:cowboy, "~> 1.0"},
      {:geo, "~> 1.1"},
      {:tirexs, "~> 0.8"},
-    {:mailgun, "~> 0.1.2"}]
+     {:coherence, "~> 0.3"},
+     {:mailgun, "~> 0.1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
