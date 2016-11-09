@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :pingal_server, PingalServer.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "rohit",
+  password: "Pingal123",
   database: "pingal_server_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
