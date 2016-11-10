@@ -24,7 +24,7 @@ defmodule PingalServer.Router do
   # Other scopes may use custom stacks.
   scope "/api", PingalServer do
      pipe_through :api
-     #resources "/users", UserController
+     resources "/users", UserController, except: [:new, :edit]
      resources "/networks", NetworkController, except: [:new, :edit]
      resources "/rooms", RoomController, except: [:new, :edit]
      resources "/thoughts", ThoughtController, except: [:new, :edit]
