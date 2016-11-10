@@ -11,10 +11,10 @@ config :pingal_server,
 
 # Configures the endpoint
 # secret_key_base: System.get_env("SECRET_KEY_BASE"),
-  
+# "OkQT0h0zjWPbgoGvv5bowc151aR2/BrRO3NMNJnQJoh/ebB0uDg5dpD7bCU4FPUx"
 config :pingal_server, PingalServer.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "OkQT0h0zjWPbgoGvv5bowc151aR2/BrRO3NMNJnQJoh/ebB0uDg5dpD7bCU4FPUx",
+  secret_key_base: System.get_env("SECRET_KEY_BASE") ,
   render_errors: [view: PingalServer.ErrorView, accepts: ~w(html json)],
   pubsub: [name: PingalServer.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -29,12 +29,13 @@ config :logger, :console,
 import_config "#{Mix.env}.exs"
 
 # Guardian
+# "9eZBL43E8zdb0SOn3D16s2d/V4SN0Hp7Vo14U2ALZWHbMJ2jqbNgChC8KKUFHXSc"
 # secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 config :guardian, Guardian,
   issuer: "PingalServer",
   ttl: { 30, :days },
   verify_issuer: true, # optional
-  secret_key: "OkQT0h0zjWPbgoGvv5bowc151aR2/BrRO3NMNJnQJoh/ebB0uDg5dpD7bCU4FPUx",
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
   serializer: PingalServer.GuardianSerializer
 
 # %% Coherence Configuration %%   Don't remove this line
