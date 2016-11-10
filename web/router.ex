@@ -1,6 +1,5 @@
 defmodule PingalServer.Router do
-  use PingalServer.Web, :router
-  use Coherence.Router      
+  use PingalServer.Web, :router     
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,37 +7,12 @@ defmodule PingalServer.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session
-  end
 
-  pipeline :protected do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true  
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
-
-  pipeline :apiprotected do
-    plug :accepts, ["json"]
-    plug Coherence.Authentication.Token, source: :header, param: "X-Auth-Token"
-  end
-
-  scope "/" do
-    pipe_through :browser
-    coherence_routes
-  end
-
-  scope "/" do
-    pipe_through :protected
-    coherence_routes :protected
-  end
-
 
   scope "/", PingalServer do
     pipe_through :browser # Use the default browser stack
@@ -53,7 +27,8 @@ defmodule PingalServer.Router do
 
   # Other scopes may use custom stacks.
   scope "/api", PingalServer do
-     pipe_through :apiprotected
+     pipe_through :api
+     #resources "/users", UserController
      resources "/networks", NetworkController, except: [:new, :edit]
      resources "/rooms", RoomController, except: [:new, :edit]
      resources "/thoughts", ThoughtController, except: [:new, :edit]
