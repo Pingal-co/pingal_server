@@ -43,7 +43,7 @@ defmodule PingalServer.Mixfile do
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.0"},
      {:exrm, "~> 1.0"},
-     {:exns, "~> 0.3.5-beta"}
+     {:exns, "~> 0.3.5-beta"},
      {:mailgun, "~> 0.1.2"}]
   end
 
