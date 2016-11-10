@@ -1,7 +1,6 @@
 defmodule PingalServer.User do
   use PingalServer.Web, :model
   alias PingalServer.User
-  use Coherence.Schema
 
   schema "users" do
     field :name, :string
@@ -11,7 +10,6 @@ defmodule PingalServer.User do
     field :phone, :string
     field :code, :integer
     field :verified, :boolean, default: false
-    coherence_schema
 
     has_many :slides, PingalServer.Slide
     has_many :rooms, PingalServer.Room
@@ -27,7 +25,7 @@ defmodule PingalServer.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified] ++ coherence_fields)
+    |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified])
     |> validate_required([])
 
   end
