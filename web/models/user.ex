@@ -27,7 +27,7 @@ defmodule PingalServer.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified])
+    |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified] ++ coherence_fields)
     |> validate_required([])
 
   end

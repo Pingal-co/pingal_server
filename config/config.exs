@@ -26,6 +26,14 @@ config :logger, :console,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
 
+# Guardian
+config :guardian, Guardian,
+  issuer: "PingalServer",
+  ttl: { 30, :days },
+  verify_issuer: true, # optional
+  secret_key: <guardian secret key>,
+  serializer: PingalServer.GuardianSerializer
+
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,
   user_schema: PingalServer.User,

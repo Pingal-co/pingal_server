@@ -26,7 +26,7 @@ defmodule PingalServer.Router do
 
   pipeline :apiprotected do
     plug :accepts, ["json"]
-    plug Coherence.Authentication.Session, protected: true 
+    plug Coherence.Authentication.Token, source: :header, param: "X-Auth-Token"
   end
 
   scope "/" do
