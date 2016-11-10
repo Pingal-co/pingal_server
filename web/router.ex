@@ -20,11 +20,6 @@ defmodule PingalServer.Router do
     get "/", PageController, :index
   end
 
-  scope "/", PingalServer do
-    pipe_through :protected
-    resources "/users", UserController
-  end
-
   # Other scopes may use custom stacks.
   scope "/api", PingalServer do
      pipe_through :api
