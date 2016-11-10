@@ -10,9 +10,10 @@ config :pingal_server,
   ecto_repos: [PingalServer.Repo]
 
 # Configures the endpoint
+# "OkQT0h0zjWPbgoGvv5bowc151aR2/BrRO3NMNJnQJoh/ebB0uDg5dpD7bCU4FPUx"
 config :pingal_server, PingalServer.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "OkQT0h0zjWPbgoGvv5bowc151aR2/BrRO3NMNJnQJoh/ebB0uDg5dpD7bCU4FPUx",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: PingalServer.ErrorView, accepts: ~w(html json)],
   pubsub: [name: PingalServer.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -31,7 +32,7 @@ config :guardian, Guardian,
   issuer: "PingalServer",
   ttl: { 30, :days },
   verify_issuer: true, # optional
-  secret_key: <guardian secret key>,
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
   serializer: PingalServer.GuardianSerializer
 
 # %% Coherence Configuration %%   Don't remove this line
