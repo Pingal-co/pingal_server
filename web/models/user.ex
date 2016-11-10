@@ -1,6 +1,6 @@
 defmodule PingalServer.User do
   use PingalServer.Web, :model
-  alias PingalServer.User
+  alias PingalServer.{Repo, User}
 
   schema "users" do
     field :name, :string
@@ -8,7 +8,8 @@ defmodule PingalServer.User do
     field :avatar, :string
     field :hash, :string
     field :phone, :string
-    field :code, :integer
+    field :passcode, :string, virtual: true
+    field :encrypted_passcode, :string
     field :verified, :boolean, default: false
 
     has_many :slides, PingalServer.Slide
@@ -64,6 +65,31 @@ defmodule PingalServer.User do
   def delete_user(user_id) do
     Repo.get!(User, user_id)
     |> Repo.delete
+  end
+
+  def authenticate(%{"email" => email, "passcode" => passcode}) do
+    user = Repo.get_by(User, email: String.downcase(email))
+
+    case check_passcode(user, passcode) do
+      true -> {:ok, user}
+      _ -> :error
+    end
+  end
+
+  defp check_passcode(user, passcode) do
+    case user do
+      nil -> false
+      _ -> Comeonin.Bcrypt.checkpw(passcode, user.encrypted_passcode)
+    end
+  end
+
+  defp generate_encrypted_passcode(current_changeset) do
+    case current_changeset do
+      %Ecto.Changeset{valid?: true, changes: %{passcode: passcode}} ->
+        put_change(current_changeset, :encrypted_passcode, Comeonin.Bcrypt.hashpwsalt(passcode))
+      _ ->
+        current_changeset
+    end
   end
   
 end

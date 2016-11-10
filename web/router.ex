@@ -12,24 +12,28 @@ defmodule PingalServer.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/", PingalServer do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/users", UserController
+    #resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.
   scope "/api", PingalServer do
      pipe_through :api
-     resources "/users", UserController, except: [:new, :edit]
-     resources "/networks", NetworkController, except: [:new, :edit]
-     resources "/rooms", RoomController, except: [:new, :edit]
-     resources "/thoughts", ThoughtController, except: [:new, :edit]
-     resources "/apps", AppController, except: [:new, :edit]
-     resources "/slides", SlideController, except: [:new, :edit]
+     scope "/v1" do
+        resources "/users", UserController, except: [:new, :edit]
+        resources "/networks", NetworkController, except: [:new, :edit]
+        resources "/rooms", RoomController, except: [:new, :edit]
+        resources "/thoughts", ThoughtController, except: [:new, :edit]
+        resources "/apps", AppController, except: [:new, :edit]
+        resources "/slides", SlideController, except: [:new, :edit]
+      end
    end
 end
 

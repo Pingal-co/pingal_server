@@ -1,7 +1,9 @@
 defmodule PingalServer.UserController do
   use PingalServer.Web, :controller
 
-  alias PingalServer.User
+  alias PingalServer.{Repo, User}
+
+  plug :scrub_params, "user" when action in [:create]
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -13,10 +15,12 @@ defmodule PingalServer.UserController do
 
     case Repo.insert(changeset) do
       {:ok, user} ->
+        {:ok, jwt, _full_claims} = user |> Guardian.encode_and_sign(:token)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> render("show.json", user: user)
+        |> render("show.json", %{user: user, jwt: jwt})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

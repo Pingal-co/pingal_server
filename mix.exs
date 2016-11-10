@@ -19,7 +19,7 @@ defmodule PingalServer.Mixfile do
   def application do
     [mod: {PingalServer, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :tirexs]]
+                    :phoenix_ecto, :postgrex, :tirexs, :comeonin]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,6 +41,7 @@ defmodule PingalServer.Mixfile do
      {:geo, "~> 1.1"},
      {:tirexs, "~> 0.8"},
      {:guardian, "~> 0.13.0"},
+     {:comeonin, "~> 2.0"},
      {:mailgun, "~> 0.1.2"}]
   end
 
