@@ -42,6 +42,7 @@ defmodule PingalServer.Mixfile do
      {:tirexs, "~> 0.8"},
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.0"},
+     {:exrm, "~> 1.0"},
      {:mailgun, "~> 0.1.2"}]
   end
 
