@@ -38,16 +38,3 @@ config :guardian, Guardian,
   secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
   serializer: PingalServer.GuardianSerializer
 
-# %% Coherence Configuration %%   Don't remove this line
-config :coherence,
-  user_schema: PingalServer.User,
-  repo: PingalServer.Repo,
-  module: PingalServer,
-  logged_out_url: "/",
-  email_from: {"Your Name", "yourname@example.com"},
-  opts: [:confirmable, :rememberable, :registerable, :invitable, :authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token]
-
-config :coherence, PingalServer.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "your api key here"
-# %% End Coherence Configuration %%
