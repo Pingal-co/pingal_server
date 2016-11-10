@@ -41,7 +41,7 @@ defmodule PingalServer.Mixfile do
      {:geo, "~> 1.1"},
      {:tirexs, "~> 0.8"},
      {:coherence, "~> 0.3"},
-     {:guardian, "~> 0.13.0"}
+     {:guardian, "~> 0.13.0"},
      {:mailgun, "~> 0.1.2"}]
   end
 
