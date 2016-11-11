@@ -43,6 +43,9 @@ defmodule PingalServer.Mixfile do
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.0"},
      {:exrm, "~> 1.0"},
+     {:msgpax, "~> 0.8.1"},
+     {:uuid, "~> 1.1.2"},
+     {:enm, git: "https://github.com/basho/enm"},
      {:exns, "~> 0.3.5-beta"},
      {:mailgun, "~> 0.1.2"}]
   end
