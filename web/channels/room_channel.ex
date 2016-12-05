@@ -67,6 +67,7 @@ defmodule PingalServer.RoomChannel do
 
   def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
+      socket = socket |> assign(:room, room_id)
       #%{"ids" => ids} = payload
       #rooms = for id <- ids, do: "room:#{id}"
       #socket = socket |> assign(:rooms, []) |> watch_new_rooms(rooms)
@@ -236,7 +237,7 @@ defmodule PingalServer.RoomChannel do
 
   def find_room_slides(socket) do
     # get slides from all rooms subscribed by user
-    Slide.get_slides(:rooms, socket.assigns.params.room_id)
+    Slide.get_slides(:room, socket.assigns.room)
   end
 
 
