@@ -224,11 +224,11 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "thought: #{inspect(thought)}"
     thought_body = String.trim(thought.thought)
     Logger.debug "thought_body: #{thought_body}"
-    room_name = "room:" <> thought.user_id <> ":" <> thought.id
+    name = "room:" <> thought.user_id <> ":" <> thought.id
      Logger.debug "room_name: #{room_name}"
     # netword_id : I must use machine learning service to assign sub_category_id
     params = %{
-      name: room_name,
+      name: name,
       body: thought_body,
       category: thought.category,
       public: true,
@@ -237,7 +237,7 @@ defmodule PingalServer.ThoughtChannel do
       network_id: 1,
     }
     Logger.debug "device params: #{inspect(params)}"
-    room = Room.get_room(:similar, name)
+    room = Room.get_room(:similar, thought_body)
     cond do
       room == nil or room == [] -> 
         Logger.debug "no similar room, creating a new room"
