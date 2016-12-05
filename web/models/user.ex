@@ -4,9 +4,10 @@ defmodule PingalServer.User do
 
   schema "users" do
     field :name, :string
-    field :email, :string
     field :avatar, :string
-    field :hash, :string
+    field :hash, :string   
+    field :email, :string
+
     field :phone, :string
     field :passcode, :string, virtual: true
     field :encrypted_passcode, :string
@@ -26,9 +27,25 @@ defmodule PingalServer.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email, :avatar, :hash, :phone, :code, :verified])
+    |> cast(params, [:name, :avatar, :hash])
     |> validate_required([])
+  end
 
+  def registration_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> cast(params, ~w(:email, :phone, :passcode), [])
+    |> validate_length(:email, min: 1, max: 255)
+    |> validate_format(:email, ~r/@/)
+    |> validate_length(:passcode, min: 5)
+    |> generate_encrypted_passcode
+  end
+
+  def verification_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> cast(params, ~w(:verified), [])
+    |> validate_required([])
   end
 
   @doc """
