@@ -6,10 +6,12 @@ defmodule PingalServer.ThoughtChannel do
   alias PingalServer.UserLocation
   alias PingalServer.Device
   alias PingalServer.Thought
+  alias PingalServer.Elasticsearch
+  import Tirexs.HTTP
   require Logger
 
   @moduledoc """
-      We should be able to suggest users of rooms and users along this channel (e.g. live updates, polls, queries).
+      We should be able to suggest users along this channel.
   
       Feature(s): 
         - User Thought Input 
@@ -74,26 +76,26 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "event: #{inspect(event)}"
     Logger.debug "message: #{inspect message}"
    
+ 
+ 
     # get user from user_hash or device_info 
     user = insert_user(message)
 
-    # insert thought
+    # insert thought and index it in elastic search
     thought = insert_thought(message, user)
 
-    # recall: find people and bots interested in category;
-    # precision: rank them by distance
-    # find users in thoughts_table who had thoughts in a category and in a given radius and order_by timestamp and distance
-
-    temporary_friends = invite_users(thought)
+    # search the thought and get the list of users with similar thoughts
+    temporary_friends = find_users(thought)
     Logger.debug "temporary friends: #{inspect(temporary_friends)}"
     
-    # get a similar room topic
+    # get or create a room
     %{id: room_id, name: room_name} = get_room(thought)   
   
     # assign user and room id to socket
     socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar})
     socket = assign(socket, :params, %{room_id: room_id, room_name: room_name})
     Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
+    socket = socket |> assign(:rooms, []) |> watch_new_rooms(temporary_friends)
 
     # push to socket
     broadcast! socket, event, %{
@@ -109,7 +111,6 @@ defmodule PingalServer.ThoughtChannel do
 
     # insert device info
     insert_device(message, user)
-
 
     {:noreply, socket}
 
@@ -127,7 +128,7 @@ defmodule PingalServer.ThoughtChannel do
     {:noreply, socket}
   end
 
-def insert_user(message) do
+  def insert_user(message) do
      device_info = message["device_info"]
      params = %{
           device: device_info["unique_id"] ,
@@ -165,7 +166,10 @@ def insert_user(message) do
           user_id: user.id,
           geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
           } 
-    Thought.insert_thought(params)
+    thought = Thought.insert_thought(params)
+    # index in elasticsearch too
+    # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
+    thought
   end
 
   def insert_device(message, user) do
@@ -189,26 +193,38 @@ def insert_user(message) do
     end
   end
 
+  def find_users(thought) do
+   # recall: find people and bots interested in category;
+    # precision: rank them by distance
+    # find users in thoughts_table who had thoughts in a category and in a given radius and order_by timestamp and distance
+    ids = Thought.get_users(:location,thought)
+    # fetch from elastic search
+    # elastic_ids = get("/thoughts/thought/_search?q=thought:" <> thought.thought)
+    rooms = for id <- ids, do: "room:#{id}"
+    rooms
+  end
+
   def invite_users(thought) do
-    Thought.get_users(:location,thought)
-    #users = Thought.get_users(thought)
-    # push to all these users
-  #  for user <- users do
-  #   notify on their user channels
-  #    broadcast! socket, "add:thought", %{
-  #      user: socket.assigns.user,
-  #      body: thought,
-  #      params: socket.assigns.params,
-  #      timestamp: :os.system_time(:milli_seconds)
-  #    }
-  #  end
+
+    users = Thought.get_users(:location, thought)
+      # push to all these users
+    for user <- users do
+       # broadcast to an external topic: user channel
+        PingalServer.Endpoint.broadcast! "user:" <> user.id, "add:thought", %{
+          user: socket.assigns.user,
+          body: thought,
+          params: socket.assigns.params,
+          timestamp: :os.system_time(:milli_seconds)
+        }
+    end
   end
 
   def get_room(thought) do
     # check if the room of same name or similar rooms exists
     name = String.trim(thought.thought)
+    # netword_id : I must use machine learning service to assign sub_category_id
     params = %{
-      name: name,
+      name: "room:" <> thought.user_id <> ":" <> thought.id,
       body: name,
       category: thought.category,
       public: true,
@@ -229,6 +245,18 @@ def insert_user(message) do
     end
   end
 
+  def watch_new_rooms(socket, rooms) do
+      Enum.reduce(rooms, socket, fn room, acc ->
+        rooms = acc.assigns.rooms
+        if room in rooms do
+          acc
+        else
+          :ok = PingalServer.Endpoint.subscribe(room)
+          assign(acc, :rooms, [room | rooms])
+        end
+      end)
+    end
+  end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
