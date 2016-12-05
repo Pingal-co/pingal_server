@@ -225,7 +225,7 @@ defmodule PingalServer.ThoughtChannel do
     thought_body = String.trim(thought.thought)
     Logger.debug "thought_body: #{thought_body}"
     name = "room:" <> thought.user_id <> ":" <> thought.id
-     Logger.debug "room_name: #{room_name}"
+     Logger.debug "room_name: #{name}"
     # netword_id : I must use machine learning service to assign sub_category_id
     params = %{
       name: name,
