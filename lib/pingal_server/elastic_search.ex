@@ -224,7 +224,7 @@ defmodule PingalServer.Elasticsearch do
         ########### curl ##############
     
 
-        query = percolator [index: bear_test, name: "1"] do
+        query = percolator [index: "thoughts", name: "1"] do
             query do
                 term "field1", "value1"
             end
