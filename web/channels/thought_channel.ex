@@ -204,16 +204,15 @@ defmodule PingalServer.ThoughtChannel do
     rooms
   end
 
-  def invite_users(thought) do
+  def notify_users(thought) do
 
     users = Thought.get_users(:location, thought)
       # push to all these users
     for user <- users do
        # broadcast to an external topic: user channel
         PingalServer.Endpoint.broadcast! "user:" <> user.id, "add:thought", %{
-          user: socket.assigns.user,
+          user: thought.user_id,
           body: thought,
-          params: socket.assigns.params,
           timestamp: :os.system_time(:milli_seconds)
         }
     end
