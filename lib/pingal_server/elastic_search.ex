@@ -1,6 +1,6 @@
 defmodule PingalServer.Elasticsearch do
     use Tirexs.Mapping
-    import Tirexs.HTTP 
+    alias Tirexs.HTTP 
     import Tirexs.Bulk  
     import Tirexs.Search  
     import Tirexs.Percolator
