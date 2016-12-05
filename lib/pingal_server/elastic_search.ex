@@ -234,7 +234,7 @@ defmodule PingalServer.Elasticsearch do
     end
 
     
-    result = Tirexs.Query.create_resource(find_thought, settings)  
-    IO.puts inspect result
+    #result = Tirexs.Query.create_resource(find_thought, settings)  
+    #IO.puts inspect result
 
 end
