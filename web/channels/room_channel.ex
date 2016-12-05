@@ -67,7 +67,13 @@ defmodule PingalServer.RoomChannel do
 
   def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
+      #%{"ids" => ids} = payload
+      #rooms = for id <- ids, do: "room:#{id}"
+      #socket = socket |> assign(:rooms, []) |> watch_new_rooms(rooms)
+      
       Logger.debug "room:#{inspect(room_id)} message: #{inspect(payload)}"
+      #Logger.debug "rooms:#{inspect(rooms)} ; socket:#{inspect(socket)}"
+
       send(self(),:after_join)
       {:ok, socket}
     else
@@ -89,6 +95,16 @@ defmodule PingalServer.RoomChannel do
 
     {:noreply, socket}
   end
+
+  def handle_in("watch", %{"room_id" => id}, socket) do
+    {:reply, :ok, watch_new_rooms(socket, ["room:#{id}"])}
+  end
+
+  def handle_in("unwatch", %{"room_id" => id}, socket) do
+    {:reply, :ok, PingalServer.Endpoint.unsubscribe("room:#{id}")}
+  end
+
+  
 
   # add a slide
   def handle_in("add:slide" = event, message, socket) do
@@ -219,7 +235,8 @@ defmodule PingalServer.RoomChannel do
   end
 
   def find_room_slides(socket) do
-    Slide.get_slides(:room, socket.assigns.params.room_id)
+    # get slides from all rooms subscribed by user
+    Slide.get_slides(:rooms, socket.assigns.rooms)
   end
 
 
@@ -229,6 +246,19 @@ defmodule PingalServer.RoomChannel do
       user_id: socket.assigns.params.user_id, 
       room_id: socket.assigns.params.room_id
     })
+  end
+
+  def watch_new_rooms(socket, rooms) do
+      Enum.reduce(rooms, socket, fn room, acc ->
+        rooms = acc.assigns.rooms
+        if room in rooms do
+          acc
+        else
+          :ok = PingalServer.Endpoint.subscribe(room)
+          assign(acc, :rooms, [room | rooms])
+        end
+      end)
+    end
   end
 
   # Add authorization logic here as required.
