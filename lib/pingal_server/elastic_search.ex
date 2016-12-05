@@ -4,7 +4,6 @@ defmodule PingalServer.Elasticsearch do
     import Tirexs.Bulk  
     import Tirexs.Search  
     import Tirexs.Percolator
-    require Tirexs.ElasticSearch
 
     def map_thought do
 
