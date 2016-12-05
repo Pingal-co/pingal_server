@@ -249,20 +249,22 @@ defmodule PingalServer.RoomChannel do
   end
 
   def watch_new_rooms(socket, rooms) do
-      Enum.reduce(rooms, socket, fn room, acc ->
-        rooms = acc.assigns.rooms
-        if room in rooms do
-          acc
-        else
-          :ok = PingalServer.Endpoint.subscribe(room)
-          assign(acc, :rooms, [room | rooms])
+      Enum.reduce(rooms, socket, 
+        fn room, acc ->
+          rooms = acc.assigns.rooms
+          if room in rooms do
+            acc
+          else
+            :ok = PingalServer.Endpoint.subscribe(room)
+            assign(acc, :rooms, [room | rooms])
+          end
         end
-      end)
-    end
+      )
   end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
   end
+
 end
