@@ -220,11 +220,16 @@ defmodule PingalServer.ThoughtChannel do
 
   def get_room(thought) do
     # check if the room of same name or similar rooms exists
-    name = String.trim(thought.thought)
+
+    Logger.debug "thought: #{inspect(thought)}"
+    thought_body = String.trim(thought.thought)
+    Logger.debug "thought_body: #{thought_body}"
+    room_name = "room:" <> thought.user_id <> ":" <> thought.id
+     Logger.debug "room_name: #{room_name}"
     # netword_id : I must use machine learning service to assign sub_category_id
     params = %{
-      name: "room:" <> thought.user_id <> ":" <> thought.id,
-      body: name,
+      name: room_name,
+      body: thought_body,
       category: thought.category,
       public: true,
       sponsored: false,
