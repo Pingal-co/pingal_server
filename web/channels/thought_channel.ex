@@ -165,11 +165,16 @@ defmodule PingalServer.ThoughtChannel do
           channel: "thought:lobby",
           user_id: user.id,
           geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
-          } 
-    thought = Thought.insert_thought(params)
-    # index in elasticsearch too
-    # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
-    thought
+          }
+    thought = Thought.get_thought(params)
+    cond do
+      thought == nil -> 
+            Thought.insert_thought(params)
+            # index in elasticsearch too
+            # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
+      true -> thought
+    end 
+
   end
 
   def insert_device(message, user) do
