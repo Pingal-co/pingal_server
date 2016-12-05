@@ -92,7 +92,7 @@ defmodule PingalServer.ThoughtChannel do
     %{id: room_id, name: room_name} = get_room(thought)   
   
     # assign user and room id to socket
-    socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar})
+    socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar, name: user.name})
     socket = assign(socket, :params, %{room_id: room_id, room_name: room_name})
     Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
     socket = socket |> assign(:rooms, []) |> watch_new_rooms(temporary_friends)
