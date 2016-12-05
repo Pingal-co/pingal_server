@@ -190,7 +190,7 @@ defmodule PingalServer.Elasticsearch do
             }
         '''
        #    curl -X POST -d query http://127.0.0.1:9200/thoughts/_search
-        { :ok, 200, r } = HTTP.post("/_search", payload)
+        { :ok, 200, r } = HTTP.post("/_search", query)
          
     
        # find = search [index: "bear_test"] do
