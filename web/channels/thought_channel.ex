@@ -128,7 +128,7 @@ defmodule PingalServer.ThoughtChannel do
 
   def insert_user(message) do
     device_info = message["device_info"]
-    device_name = device_info["unique_id"] ,
+    device_name = device_info["unique_id"]
     user_hash =  message["user_hash"]
     Logger.debug "name: #{inspect(device_name)}"
     # user name : can be device_name | email | phone
