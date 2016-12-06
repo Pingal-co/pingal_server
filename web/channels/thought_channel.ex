@@ -160,7 +160,7 @@ defmodule PingalServer.ThoughtChannel do
     latitude = location["latitude"]
     longitude = location["longitude"]
     params = %{
-          thought: message["thought"],
+          thought: String.downcase(message["thought"]),
           category: message["category"],
           channel: "thought:lobby",
           count: 1,

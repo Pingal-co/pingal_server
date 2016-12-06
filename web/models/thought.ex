@@ -34,7 +34,7 @@ defmodule PingalServer.Thought do
   end
 
   def get_thought(%{thought: name}) do
-    Repo.get_by!(Thought, thought: name)
+    Repo.get_by(Thought, thought: name)
   end
 
   def get_thought(:id, thought_id) do
