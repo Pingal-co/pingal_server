@@ -76,8 +76,6 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "event: #{inspect(event)}"
     Logger.debug "message: #{inspect message}"
    
- 
- 
     # get user from user_hash or device_info 
     user = insert_user(message)
 
@@ -129,15 +127,16 @@ defmodule PingalServer.ThoughtChannel do
   end
 
   def insert_user(message) do
-     device_info = message["device_info"]
-     params = %{
-          device: device_info["unique_id"] ,
-          hash: message["user_hash"]
-    }
-    Logger.debug "params: #{inspect(params)}"
-    user = User.get_user(params.device)
+    device_info = message["device_info"]
+    device_name = device_info["unique_id"] ,
+    user_hash =  message["user_hash"]
+    Logger.debug "name: #{inspect(device_name)}"
+    # user name : can be device_name | email | phone
+    # only using device name for testing
+    name = device_name
+    user = User.get_user(name)
     cond do
-      user == nil -> User.insert_user(%{name: params.device, hash: params.hash})
+      user == nil -> User.insert_user(%{name: name, hash: user_hash})
       true -> user
     end
   end

@@ -70,7 +70,7 @@ defmodule PingalServer.RoomChannel do
       socket = socket |> assign(:room, room_id)
       #%{"ids" => ids} = payload
       #rooms = for id <- ids, do: "room:#{id}"
-      #socket = socket |> assign(:rooms, []) |> watch_new_rooms(rooms)
+      #socket = socket |> assign(:watch_similar_rooms, []) |> watch_new_rooms(rooms)
       
       Logger.debug "room:#{inspect(room_id)} message: #{inspect(payload)}"
       #Logger.debug "rooms:#{inspect(rooms)} ; socket:#{inspect(socket)}"
@@ -112,15 +112,15 @@ defmodule PingalServer.RoomChannel do
     Logger.debug "event: #{inspect(event)}"
 
     Logger.debug "message: #{inspect message}"
-    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
+    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.room}"
     slide_temp_id = message["_id"]
     edit = message["edit"]
     Logger.debug(" slide_id: #{slide_temp_id}")
     params = %{body: Map.get(message, "text"),
                 public: true,
                 sponsored: false,
-                user_id: socket.assigns.params.user_id,
-                room_id: socket.assigns.params.room_id,
+                user_id: socket.assigns.user.user_id,
+                room_id: socket.assigns.room,
                 id: slide_temp_id,
               }
 
