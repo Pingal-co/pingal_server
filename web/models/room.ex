@@ -38,8 +38,8 @@ defmodule PingalServer.Room do
 
   def search(search_term) do
       from(r in Room,
-      where: fragment("? % ?", r.name, ^search_term),
-      order_by: fragment("similarity(?, ?) DESC", r.name, ^search_term))
+      where: fragment("? % ?", r.body, ^search_term),
+      order_by: fragment("similarity(?, ?) DESC", r.body, ^search_term))
   end
 
   def get_rooms do
@@ -72,7 +72,7 @@ defmodule PingalServer.Room do
 
       query = from r in Room,
         select: %{id: r.id, name: r.name, body: r.body, public: r.public, sponsored: r.sponsored, host_id: r.host_id, network_id: r.network_id},
-        where: like(r.name, ^("%#{name}%"))
+        where: like(r.body, ^("%#{name}%"))
       
       query
       |> Repo.all
@@ -87,6 +87,10 @@ defmodule PingalServer.Room do
   end
 
   def get_room(room) do
+    Repo.get_by(Room, body: room)
+  end
+
+  def get_room(:name, room) do
     Repo.get_by(Room, name: room)
   end
 
@@ -94,7 +98,7 @@ defmodule PingalServer.Room do
 
     query = from r in Room,
       select: %{id: r.id, name: r.name, body: r.body, public: r.public, sponsored: r.sponsored, host_id: r.host_id, network_id: r.network_id},
-      where: like(r.name, ^("%#{name}%"))
+      where: like(r.body, ^("%#{name}%"))
     
     query
     |> Repo.one
