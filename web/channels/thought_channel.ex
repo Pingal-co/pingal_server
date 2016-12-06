@@ -173,7 +173,7 @@ defmodule PingalServer.ThoughtChannel do
             Thought.insert_thought(params)
             # index in elasticsearch too
             # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
-      thought -> Thought.update_thought(%{id: thought.id, count: thought.count + 1, most_recent: :os.system_time(:milli_seconds)})
+      thought -> Thought.update_thought(%{id: thought.id, count: thought.count + 1, most_recent: Ecto.DateTime.utc})
     end 
 
   end
