@@ -109,37 +109,37 @@ defmodule PingalServer.RoomChannel do
 
   # add a slide
   def handle_in("add:slide" = event, message, socket) do
+    # broadcast the slide to all clients;
+    # add the user obj and room obj
+    # insert when save
     Logger.debug "event: #{inspect(event)}"
-
-    Logger.debug "message: #{inspect message}"
-    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.room}"
-    slide_temp_id = message["_id"]
+    Logger.debug "message: #{inspect message}"   
     edit = message["edit"]
-    Logger.debug(" slide_id: #{slide_temp_id}")
-    params = %{body: Map.get(message, "text"),
-                public: true,
-                sponsored: false,
-                user_id: socket.assigns.user,
-                room_id: socket.assigns.room,
-                id: slide_temp_id,
-              }
-
-    Logger.debug "slide_params: #{inspect(params)}"
-
     # insert after broadcast in the background
     if (!edit) do
+      # id: slide_temp_id,
+       slide_temp_id = message["_id"]
+       params = %{ body: Map.get(message, "text"),
+                public: Map.get(message, "public"),
+                sponsored: Map.get(message, "sponsored"),
+                user_id: socket.assigns.user,
+                room_id: socket.assigns.room,               
+      }
+      Logger.debug "slide_params before insert: #{inspect(params)}"
       slide = Slide.insert_slide(params)
-      Map.put(params, :id, slide.id)
-      Logger.debug "slide_params after insert: #{inspect params}"
+      Map.put(message, :slide_id, slide.id)
+      Logger.debug "message after insert: #{inspect message}"
     end
 
-    broadcast! socket, event, %{
-      user: socket.assigns.user,
-      body: Map.get(message, "text"),
-      room: socket.topic,
-      timestamp: :os.system_time(:milli_seconds),
-      params: params
-    }
+    broadcast! socket, event, message
+    
+    #%{
+    #  user: socket.assigns.user,
+    #  body: Map.get(message, "text"),
+    #  room: socket.topic,
+    #  timestamp: :os.system_time(:milli_seconds),
+    #  params: params
+    #}
 
     {:noreply, socket}
 
