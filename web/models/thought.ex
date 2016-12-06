@@ -8,6 +8,7 @@ defmodule PingalServer.Thought do
     field :category, :string
     field :count, :integer
     field :channel, :string
+    field :most_recent, Ecto.DateTime
     field :geom, Geo.Point
     belongs_to :user, PingalServer.User
 
@@ -19,7 +20,7 @@ defmodule PingalServer.Thought do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:thought, :category, :channel, :user_id, :geom, :count])
+    |> cast(params, [:thought, :category, :channel, :user_id, :geom, :count, :most_recent])
     |> validate_required([:thought, :category])
   end
 

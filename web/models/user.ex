@@ -8,6 +8,9 @@ defmodule PingalServer.User do
     field :hash, :string   
     field :email, :string
 
+    field :login_count, :integer
+    field :login_most_recent, Ecto.DateTime
+
     field :phone, :string
     field :passcode, :string, virtual: true
     field :encrypted_passcode, :string
@@ -27,7 +30,7 @@ defmodule PingalServer.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :avatar, :hash])
+    |> cast(params, [:name, :avatar, :hash, :login_count, :login_most_recent])
     |> validate_required([])
   end
 
