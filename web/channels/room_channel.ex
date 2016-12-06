@@ -67,7 +67,7 @@ defmodule PingalServer.RoomChannel do
 
   def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
-      socket = socket |> assign(:room, room_id)
+      socket = socket |> assign(:room, room_id})
       #%{"ids" => ids} = payload
       #rooms = for id <- ids, do: "room:#{id}"
       #socket = socket |> assign(:watch_similar_rooms, []) |> watch_new_rooms(rooms)
@@ -119,7 +119,7 @@ defmodule PingalServer.RoomChannel do
     params = %{body: Map.get(message, "text"),
                 public: true,
                 sponsored: false,
-                user_id: socket.assigns.user.user_id,
+                user_id: socket.assigns.user,
                 room_id: socket.assigns.room,
                 id: slide_temp_id,
               }
