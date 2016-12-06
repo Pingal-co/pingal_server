@@ -6,6 +6,7 @@ defmodule PingalServer.Thought do
   schema "thoughts" do
     field :thought, :string
     field :category, :string
+    field :count, :integer
     field :channel, :string
     field :geom, Geo.Point
     belongs_to :user, PingalServer.User
@@ -18,7 +19,7 @@ defmodule PingalServer.Thought do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:thought, :category, :channel, :user_id, :geom])
+    |> cast(params, [:thought, :category, :channel, :user_id, :geom, :count])
     |> validate_required([:thought, :category])
   end
 

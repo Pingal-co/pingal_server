@@ -163,6 +163,7 @@ defmodule PingalServer.ThoughtChannel do
           thought: message["thought"],
           category: message["category"],
           channel: "thought:lobby",
+          count: 1,
           user_id: user.id,
           geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
           }
@@ -172,7 +173,7 @@ defmodule PingalServer.ThoughtChannel do
             Thought.insert_thought(params)
             # index in elasticsearch too
             # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
-      true -> thought
+      true -> Thought.update_thought(%{count: thought.count + 1})
     end 
 
   end
