@@ -167,13 +167,13 @@ defmodule PingalServer.ThoughtChannel do
           user_id: user.id,
           geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
           }
-    thought = Thought.get_thought(params)
-    cond do
-      thought == nil -> 
+
+    case Thought.get_thought(params) do
+      nil -> 
             Thought.insert_thought(params)
             # index in elasticsearch too
             # put("/thoughts/thought/" <> thought.id, [thought: thought.thought, category: thought.category])
-      true -> Thought.update_thought(%{count: thought.count + 1, most_recent: :os.system_time(:milli_seconds)})
+      thought -> Thought.update_thought(%{count: thought.count + 1, most_recent: :os.system_time(:milli_seconds)})
     end 
 
   end
