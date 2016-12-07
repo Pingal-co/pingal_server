@@ -46,6 +46,7 @@ defmodule PingalServer.Slide do
     query = from s in Slide,
       select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user_id: s.user_id, room_id: s.room_id},
       where: s.room_id == ^room_id
+      preload: :users
 
     query
     |> Repo.all
