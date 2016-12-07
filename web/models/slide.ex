@@ -1,6 +1,8 @@
 defmodule PingalServer.Slide do
   use PingalServer.Web, :model
-  alias PingalServer.Slide 
+  alias PingalServer.Slide
+  alias PingalServer.User 
+  alias PingalServer.Room  
 
   schema "slides" do
     field :body, :string
@@ -44,9 +46,10 @@ defmodule PingalServer.Slide do
 
   def get_slides(:room, room_id) do
     query = from s in Slide,
-      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user: %{_id: s.user.id, name: s.user.hash, avatar: s.user.avatar}, room: %{id: s.room.id, name: s.room.name} },
+      select: %{id: s.id, body: s.body, public: s.public, sponsored: s.sponsored, user: s.user , room: s.room},
       where: s.room_id == ^room_id,
-      preload: [:user, :room]
+      preload: [user: from(u in User, select: %{_id: u.id, name: u.hash, avatar: u.avatar}), 
+                room: from(r in Room, select: %{id: r.id, name: r.name})]
 
     query
     |> Repo.all
