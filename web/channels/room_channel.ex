@@ -115,6 +115,7 @@ defmodule PingalServer.RoomChannel do
     Logger.debug "event: #{inspect(event)}"
     Logger.debug "message: #{inspect message}"   
     edit = message["edit"]
+    Map.put(message, :body, Map.get(message, "text"))
     # insert after broadcast in the background
     if (!edit) do
       # id: slide_temp_id,
