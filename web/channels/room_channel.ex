@@ -113,29 +113,14 @@ defmodule PingalServer.RoomChannel do
     # add the user obj and room obj
     # insert when save
     Logger.debug "event: #{inspect(event)}"
-    edit = message["edit"]
+    
     #Map.put(message, "body", Map.get(message, "text"))
     message = %{message | body: Map.get(message, "text")}
     Logger.debug "message: #{inspect message}" 
     # insert after broadcast in the background
-    if (!edit) do
-      # id: slide_temp_id,
-       slide_temp_id = message["_id"]
-       params = %{ body: Map.get(message, "text"),
-                public: Map.get(message, "public"),
-                sponsored: Map.get(message, "sponsored"),
-                user_id: socket.assigns.user,
-                room_id: socket.assigns.room,               
-      }
-      Logger.debug "slide_params before insert: #{inspect(params)}"
-      slide = Slide.insert_slide(params)
-    end
 
-    #Map.put(message, "slide_id", slide.id)
-    if (!edit) do
-      message = %{message | slide_id: slide.id}
-      Logger.debug "message after insert: #{inspect message}"
-    end
+    # check if slide needs to be saved in db
+    message = insert_slide(socket, message)
   
     broadcast! socket, event, message
     
@@ -149,6 +134,37 @@ defmodule PingalServer.RoomChannel do
 
     {:noreply, socket}
 
+  end
+
+  def insert_slide(socket, message) do
+        edit = message["edit"]
+        case edit do
+          true -> message
+          false ->
+            slide_temp_id = message["_id"]
+            params = %{ body: Map.get(message, "text"),
+                      public: Map.get(message, "public"),
+                      sponsored: Map.get(message, "sponsored"),
+                      user_id: socket.assigns.user,
+                      room_id: socket.assigns.room,               
+            }
+            Logger.debug "slide_params before insert: #{inspect(params)}"
+            slide = Slide.insert_slide(params)
+            %{message | slide_id: slide.id}
+        end
+
+       # if (!edit) do
+            # id: slide_temp_id,
+       #     slide_temp_id = message["_id"]
+       #     params = %{ body: Map.get(message, "text"),
+       #               public: Map.get(message, "public"),
+       #               sponsored: Map.get(message, "sponsored"),
+       #               user_id: socket.assigns.user,
+       #               room_id: socket.assigns.room,               
+       #     }
+       #     Logger.debug "slide_params before insert: #{inspect(params)}"
+       #     Slide.insert_slide(params)
+       # end
   end
 
   def handle_in("update:page" = event, message, socket) do
