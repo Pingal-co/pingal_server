@@ -113,9 +113,7 @@ defmodule PingalServer.RoomChannel do
     # add the user obj and room obj
     # insert when save
     Logger.debug "event: #{inspect(event)}"
-    
-    #Map.put(message, "body", Map.get(message, "text"))
-    message = %{message | body: Map.get(message, "text")}
+
     Logger.debug "message: #{inspect message}" 
     # insert after broadcast in the background
 
