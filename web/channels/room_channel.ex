@@ -113,9 +113,10 @@ defmodule PingalServer.RoomChannel do
     # add the user obj and room obj
     # insert when save
     Logger.debug "event: #{inspect(event)}"
-    Logger.debug "message: #{inspect message}"   
     edit = message["edit"]
-    Map.put(message, :body, Map.get(message, "text"))
+    #Map.put(message, "body", Map.get(message, "text"))
+    message = %{message | body: Map.get(message, "text")}
+    Logger.debug "message: #{inspect message}" 
     # insert after broadcast in the background
     if (!edit) do
       # id: slide_temp_id,
@@ -128,7 +129,8 @@ defmodule PingalServer.RoomChannel do
       }
       Logger.debug "slide_params before insert: #{inspect(params)}"
       slide = Slide.insert_slide(params)
-      Map.put(message, :slide_id, slide.id)
+      #Map.put(message, "slide_id", slide.id)
+      message = %{message | slide_id: slide.id}
       Logger.debug "message after insert: #{inspect message}"
     end
 
