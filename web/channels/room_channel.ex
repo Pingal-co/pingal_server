@@ -129,11 +129,14 @@ defmodule PingalServer.RoomChannel do
       }
       Logger.debug "slide_params before insert: #{inspect(params)}"
       slide = Slide.insert_slide(params)
-      #Map.put(message, "slide_id", slide.id)
+    end
+
+    #Map.put(message, "slide_id", slide.id)
+    if (!edit) do
       message = %{message | slide_id: slide.id}
       Logger.debug "message after insert: #{inspect message}"
     end
-
+  
     broadcast! socket, event, message
     
     #%{
