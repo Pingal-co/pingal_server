@@ -119,7 +119,7 @@ defmodule PingalServer.RoomChannel do
 
     # check if slide needs to be saved in db
     message = insert_slide(socket, message)
-  
+    Logger.debug "after insert message: #{inspect message}" 
     broadcast! socket, event, message
     
     #%{
@@ -132,37 +132,6 @@ defmodule PingalServer.RoomChannel do
 
     {:noreply, socket}
 
-  end
-
-  def insert_slide(socket, message) do
-        edit = message["edit"]
-        case edit do
-          true -> message
-          false ->
-            slide_temp_id = message["_id"]
-            params = %{ body: Map.get(message, "text"),
-                      public: Map.get(message, "public"),
-                      sponsored: Map.get(message, "sponsored"),
-                      user_id: socket.assigns.user,
-                      room_id: socket.assigns.room,               
-            }
-            Logger.debug "slide_params before insert: #{inspect(params)}"
-            slide = Slide.insert_slide(params)
-            %{message | slide_id: slide.id}
-        end
-
-       # if (!edit) do
-            # id: slide_temp_id,
-       #     slide_temp_id = message["_id"]
-       #     params = %{ body: Map.get(message, "text"),
-       #               public: Map.get(message, "public"),
-       #               sponsored: Map.get(message, "sponsored"),
-       #               user_id: socket.assigns.user,
-       #               room_id: socket.assigns.room,               
-       #     }
-       #     Logger.debug "slide_params before insert: #{inspect(params)}"
-       #     Slide.insert_slide(params)
-       # end
   end
 
   def handle_in("update:page" = event, message, socket) do
@@ -253,6 +222,24 @@ defmodule PingalServer.RoomChannel do
       nil -> Room.insert_room(room_params)
       room -> room
     end
+  end
+
+  def insert_slide(socket, message) do
+        edit = message["edit"]
+        case edit do
+          true -> message
+          false ->
+            slide_temp_id = message["_id"]
+            params = %{ body: Map.get(message, "text"),
+                      public: Map.get(message, "public"),
+                      sponsored: Map.get(message, "sponsored"),
+                      user_id: socket.assigns.user,
+                      room_id: socket.assigns.room,               
+            }
+            Logger.debug "slide_params before insert: #{inspect(params)}"
+            slide = Slide.insert_slide(params)
+            Map.put(message, :slide_id, slide.id}
+        end
   end
 
   def find_room_slides(socket) do
