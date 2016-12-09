@@ -238,7 +238,7 @@ defmodule PingalServer.RoomChannel do
             }
             Logger.debug "slide_params before insert: #{inspect(params)}"
             slide = Slide.insert_slide(params)
-            Map.put(message, :slide_id, slide.id}
+            Map.put(message, :slide_id, slide.id)
         end
   end
 
