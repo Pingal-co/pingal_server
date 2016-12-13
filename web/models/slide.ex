@@ -47,7 +47,7 @@ defmodule PingalServer.Slide do
   def get_slides(:room, room_id) do   
     query = from s in Slide, 
             preload: :user, 
-            select: map(s, [:user_id, :body, :public, :sponsored, :id, user: [:id, :hash]]),
+            select: map(s, [:user_id, :body, :public, :sponsored, :id, :inserted_at, user: [:id, :hash]]),
             where: s.room_id == ^room_id
  
     query |> Repo.all 
