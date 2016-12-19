@@ -102,11 +102,7 @@ defmodule PingalServer.UserChannel do
     # user data to update (get everything from message)
     Logger.debug "#{inspect(event)} message: #{inspect(message)}"
     user = Map.get(message, "user")
-    params = %{ id: user.id,
-                name: user.name,
-                avatar: user.avatar
-              }
-    User.update_user(params)
+    User.update_user(user)
     # send a confirmation back to user on user channel
     {:noreply, socket}
   end
@@ -197,10 +193,21 @@ defmodule PingalServer.UserChannel do
      Slide.insert_slide(params)
   end
 
-   def update_user(socket) do
-    user = User.get_user(socket.assigns.user)
+   def update_user(message) do
+    device_info = message["device_info"]
+    device_name = device_info["unique_id"]
+    # find user based on name: id, phone, email, key or device_id
+    name = device_name
+    user = User.get_user(name)
+    params = %{ phone: message["phone"],
+                name: message["name"],
+                email: message["email"],
+                avatar: message["avatar"],
+                hash: message["hash"]
+              }
+
     cond do
-      user == nil -> User.insert_user(%{"name" => socket.assigns.user})
+      user == nil -> User.insert_user(params)
       true -> user
     end
   end
