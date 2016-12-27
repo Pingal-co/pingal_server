@@ -83,8 +83,8 @@ defmodule PingalServer.ThoughtChannel do
     thought = insert_thought(message, user)
 
     # search the thought and get the list of users with similar thoughts
-    temporary_friends = find_users(thought)
-    Logger.debug "temporary friends: #{inspect(temporary_friends)}"
+    introductions = find_users(thought)
+    Logger.debug "introductions: #{inspect(introductions)}"
     
     # get or create a room
     %{id: room_id, name: room_name} = get_room(thought)   
@@ -92,8 +92,13 @@ defmodule PingalServer.ThoughtChannel do
     # assign user and room id to socket
     socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar, name: user.name})
     socket = assign(socket, :params, %{room_id: room_id, room_name: room_name})
-    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
-    socket = socket |> assign(:rooms, []) |> watch_new_rooms(temporary_friends)
+ 
+    # let the user watch the introductions chat stream
+    socket = socket |> assign(:rooms, []) |> watch_new_rooms(thought, introductions)
+    Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}"
+
+    # let introductions watch the user stream.
+    # notify_introductions(thought, introductions) 
 
     # push to socket
     broadcast! socket, event, %{
@@ -113,6 +118,7 @@ defmodule PingalServer.ThoughtChannel do
     {:noreply, socket}
 
   end
+
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   def handle_in("ping", payload, socket) do
@@ -202,24 +208,19 @@ defmodule PingalServer.ThoughtChannel do
    # recall: find people and bots interested in category;
     # precision: rank them by distance
     # find users in thoughts_table who had thoughts in a category and in a given radius and order_by timestamp and distance
-    ids = Thought.get_users(:location,thought)
+    thoughts = Thought.get_users(:location,thought)
     # fetch from elastic search
     # elastic_ids = get("/thoughts/thought/_search?q=thought:" <> thought.thought)
-    rooms = for id <- ids, do: "room:#{id}"
+    rooms = for thought <- thoughts, do: "room:#{thought.user_id}:#{thought.id}"
     rooms
   end
 
-  def notify_users(thought) do
-
-    users = Thought.get_users(:location, thought)
+  def notify_introductions(thought, introductions) do
       # push to all these users
-    for user <- users do
+    for room <- introductions do
        # broadcast to an external topic: user channel
-        PingalServer.Endpoint.broadcast! "user:" <> user.id, "add:thought", %{
-          user: thought.user_id,
-          body: thought,
-          timestamp: :os.system_time(:milli_seconds)
-        }
+       # broadcast "watch" event to each user channel
+        PingalServer.Endpoint.broadcast! "room:" <> room.id, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
   end
 
@@ -254,7 +255,7 @@ defmodule PingalServer.ThoughtChannel do
     end
   end
 
-  def watch_new_rooms(socket, rooms) do
+  def watch_new_rooms(socket, thought, rooms) do
       Enum.reduce(rooms, socket, 
         fn room, acc ->
           rooms = acc.assigns.rooms
@@ -262,7 +263,7 @@ defmodule PingalServer.ThoughtChannel do
             acc
           else
             :ok = PingalServer.Endpoint.subscribe(room)
-            assign(acc, :rooms, [room | rooms])
+            assign(acc, :rooms, %{thought.id => [room | rooms]})
           end
         end
       )

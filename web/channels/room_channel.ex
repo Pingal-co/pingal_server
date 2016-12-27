@@ -66,6 +66,7 @@ defmodule PingalServer.RoomChannel do
   """
 
   def join("room:" <> room_id, payload, socket) do
+    # id format: "room:#{thought.user_id}:#{thought.id}"
     if authorized?(payload) do
       socket = socket |> assign(:roomid, room_id)
       #%{"ids" => ids} = payload
