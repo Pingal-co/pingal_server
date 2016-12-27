@@ -245,7 +245,8 @@ defmodule PingalServer.RoomChannel do
 
   def find_room_slides(socket) do
     # get slides from all rooms subscribed by user
-    Slide.get_slides(:room, socket.assigns.roomid)
+    %{id: room_id} = Room.get_room(:body, socket.assigns.roomid)
+    Slide.get_slides(:room, room_id)
   end
 
 

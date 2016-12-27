@@ -94,6 +94,10 @@ defmodule PingalServer.Room do
     Repo.get_by(Room, name: room)
   end
 
+  def get_room(:body, room) do
+    Repo.get_by(Room, body: room)
+  end
+
   def get_room(:similar, name) do
 
     query = from r in Room,
