@@ -25,8 +25,8 @@ defmodule PingalServer.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
 
-  def connect(%{"user" => user}, socket) do
-    {:ok, assign(socket, :user, user)}
+  def connect(%{"user" => userid}, socket) do
+    {:ok, assign(socket, :userid, userid)}
   end
   
   def connect(_params, socket) do

@@ -55,8 +55,8 @@ defmodule PingalServer.UserChannel do
 
   def handle_info("after_join", socket) do
     # load user rooms |> broadcast
-    slides = find_user_slides(socket)
-    broadcast! socket, "user:slides", %{slides: slides}
+    slides = find_user_thoughts(socket)
+    broadcast! socket, "user:thoughts", %{slides: slides}
     {:noreply, socket}
   end
 
@@ -153,17 +153,17 @@ defmodule PingalServer.UserChannel do
 
   #  list thoughts by user
   def find_user_thoughts(socket) do
-    Thought.get_thoughts(socket.assigns.params.user_id)
+    Thought.get_thoughts(socket.assigns.userid)
   end
 
    #  list slides by user
   def find_user_slides(socket) do
-    Slide.get_slides(:user, socket.assigns.params.user_id)
+    Slide.get_slides(:user, socket.assigns.userid)
   end
 
    #  list rooms by user
   def find_user_rooms(socket) do
-    Room.get_rooms(:user, socket.assigns.params.user_id)
+    Room.get_rooms(:user, socket.assigns.userid)
   end
  
   def insert_room(socket, message) do
