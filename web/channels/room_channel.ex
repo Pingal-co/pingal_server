@@ -67,7 +67,7 @@ defmodule PingalServer.RoomChannel do
 
   def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
-      socket = socket |> assign(:room, room_id)
+      socket = socket |> assign(:roomid, room_id)
       #%{"ids" => ids} = payload
       #rooms = for id <- ids, do: "room:#{id}"
       #socket = socket |> assign(:watch_similar_rooms, []) |> watch_new_rooms(rooms)
@@ -89,7 +89,7 @@ defmodule PingalServer.RoomChannel do
 
     broadcast! socket, "get:slides_in_room", %{slides: slides}
 
-    Presence.track(socket, socket.assigns.user, %{
+    Presence.track(socket, socket.assigns.userid, %{
       online_at: :os.system_time(:milli_seconds)
       })
     push socket, "presence_state", Presence.list(socket)
@@ -143,7 +143,7 @@ defmodule PingalServer.RoomChannel do
                     body: Map.get(message, "text"),
                     public: true,
                     sponsored: false,
-                    host_id: socket.assigns.params.user_id,
+                    host_id: socket.assigns.userid,
                     network_id: 1
                   }
 
@@ -157,13 +157,13 @@ defmodule PingalServer.RoomChannel do
     Logger.debug "event: #{inspect(event)}"
 
     Logger.debug "message: #{inspect(message)}"
-    Logger.debug "params for #{inspect socket.assigns.user} : #{inspect socket.assigns.params}"
+    Logger.debug "params for #{inspect socket.assigns.userid} : #{inspect socket.assigns.params}"
 
     room_params = %{name: socket.topic,
                     body: Map.get(message, "text"),
                     public: true,
                     sponsored: false,
-                    host_id: socket.assigns.params.user_id,
+                    host_id: socket.assigns.userid,
                     network_id: 1
                   }
 
@@ -210,7 +210,7 @@ defmodule PingalServer.RoomChannel do
   end
 
   def insert_user(socket) do
-    user = User.get_user(socket.assigns.user)
+    user = User.get_user(socket.assigns.userid)
     cond do
       user == nil -> User.insert_user(%{"name" => socket.assigns.user})
       true -> user
@@ -233,8 +233,8 @@ defmodule PingalServer.RoomChannel do
             params = %{ body: Map.get(message, "text"),
                       public: Map.get(message, "public"),
                       sponsored: Map.get(message, "sponsored"),
-                      user_id: socket.assigns.user,
-                      room_id: socket.assigns.room,               
+                      user_id: socket.assigns.userid,
+                      room_id: socket.assigns.roomid,               
             }
             Logger.debug "slide_params before insert: #{inspect(params)}"
             slide = Slide.insert_slide(params)
@@ -244,15 +244,15 @@ defmodule PingalServer.RoomChannel do
 
   def find_room_slides(socket) do
     # get slides from all rooms subscribed by user
-    Slide.get_slides(:room, socket.assigns.room)
+    Slide.get_slides(:room, socket.assigns.roomid)
   end
 
 
   def insert_event(event \\ "view",socket) do
     Event.insert_event(%{
       name: event, 
-      user_id: socket.assigns.params.user_id, 
-      room_id: socket.assigns.params.room_id
+      user_id: socket.assigns.userid, 
+      room_id: socket.assigns.roomid
     })
   end
 
