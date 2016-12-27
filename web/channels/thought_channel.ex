@@ -98,7 +98,7 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}"
 
     # let introductions watch the user stream.
-    # notify_introductions(thought, introductions) 
+    notify_introductions(thought, introductions) 
 
     # push to socket
     broadcast! socket, event, %{
