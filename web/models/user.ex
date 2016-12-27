@@ -76,7 +76,7 @@ defmodule PingalServer.User do
       Repo.get_by(User, name: user)
   end
 
-  def update_user(%{"id" => user_id} = user_changes) do
+  def update_user(%{id: user_id} = user_changes) do
     Repo.get!(User, user_id)
     |> changeset(user_changes)
     |> Repo.update!

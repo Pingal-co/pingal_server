@@ -99,10 +99,10 @@ defmodule PingalServer.UserChannel do
   def handle_in("update:user" = event, message, socket) do
     # user data to update (get everything from message)
     Logger.debug "#{inspect(event)} message: #{inspect(message)}"
-    user = Map.get(message, "user")
-    User.update_user(user)
+    params = Map.get(message, "user")
+    user = update_user(params)
     # send a confirmation back to user on user channel
-    {:noreply, socket}
+    {:reply, user, socket}
   end
 
   # list users around me
@@ -192,8 +192,7 @@ defmodule PingalServer.UserChannel do
   end
 
    def update_user(message) do
-    device_info = message["device_info"]
-    device_name = device_info["unique_id"]
+    device_name = message["deviceid"]
     # find user based on name: id, phone, email, key or device_id
     name = device_name
     user = User.get_user(name)
@@ -201,7 +200,7 @@ defmodule PingalServer.UserChannel do
                 name: message["name"],
                 email: message["email"],
                 avatar: message["avatar"],
-                hash: message["hash"]
+                hash: message["name_hash"]
               }
 
     cond do
