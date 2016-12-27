@@ -102,7 +102,7 @@ defmodule PingalServer.UserChannel do
     params = Map.get(message, "user")
     user = update_user(params)
     # send a confirmation back to user on user channel
-    {:reply, user, socket}
+    {:reply, {:ok, user}, socket}
   end
 
   # list users around me
