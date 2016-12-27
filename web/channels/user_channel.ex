@@ -56,7 +56,7 @@ defmodule PingalServer.UserChannel do
   def handle_info("after_join", socket) do
     # load user rooms |> broadcast
     slides = find_user_thoughts(socket)
-    broadcast! socket, "user:thoughts", %{slides: slides}
+    broadcast! socket, "get:user_thoughts", %{slides: slides}
     {:noreply, socket}
   end
 
