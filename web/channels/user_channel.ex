@@ -46,7 +46,7 @@ defmodule PingalServer.UserChannel do
 
     if authorized?(payload) do
       socket = assign(socket, :userid, user_id)
-      send(self(),:after_join)
+      #send(self(),:after_join)
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
