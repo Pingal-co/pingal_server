@@ -192,16 +192,17 @@ defmodule PingalServer.UserChannel do
   end
 
    def update_user(message) do
+    Logger.debug "update user: #{inspect(message)}"
+    params = %{ phone: message["phone"],
+              name: message["name"],
+              email: message["email"],
+              avatar: message["avatar"],
+              hash: message["name_hash"]
+    }
     device_name = message["deviceid"]
     # find user based on name: id, phone, email, key or device_id
     name = device_name
     user = User.get_user(name)
-    params = %{ phone: message["phone"],
-                name: message["name"],
-                email: message["email"],
-                avatar: message["avatar"],
-                hash: message["name_hash"]
-              }
 
     cond do
       user == nil -> User.insert_user(params)
