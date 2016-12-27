@@ -87,7 +87,7 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "introductions: #{inspect(introductions)}"
     
     # get or create a room
-    %{id: room_id, name: room_name} = get_room(thought)   
+    %{id: id, name: room_name, body: room_id} = get_room(thought)   
   
     # assign user and room id to socket
     socket = assign(socket, :user, %{_id: user.id, avatar: user.avatar, name: user.name})
