@@ -45,7 +45,7 @@ defmodule PingalServer.UserChannel do
     Logger.debug "user #{inspect(user_id)} payload: #{inspect(payload)}"
 
     if authorized?(payload) do
-      send(self(),:after_join)
+      # send(self(),:after_join)
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
