@@ -218,11 +218,12 @@ defmodule PingalServer.ThoughtChannel do
   def notify_introductions(thought, introductions) do
       # push to all these users
       Logger.debug "thought: #{inspect(thought)}"
-      Logger.debug "introductions: #{inspect(introductions)}"
+      
     for room <- introductions do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
-        # PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+       Logger.debug "notifying room: #{room}"
+        PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
   end
 
@@ -257,8 +258,8 @@ defmodule PingalServer.ThoughtChannel do
     end
   end
 
-  def watch_new_rooms(socket, thought, rooms) do
-      Enum.reduce(rooms, socket, 
+  def watch_new_rooms(socket, thought, new_rooms) do
+      Enum.reduce(new_rooms, socket, 
         fn room, acc ->
           rooms = acc.assigns.rooms
           if room in rooms do

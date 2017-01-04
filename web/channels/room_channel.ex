@@ -99,11 +99,13 @@ defmodule PingalServer.RoomChannel do
   end
 
   def handle_in("watch", %{"room_id" => id}, socket) do
-    {:reply, :ok, watch_new_rooms(socket, ["#{id}"])}
+    watch_new_rooms(socket, ["#{id}"])
+    {:noreply, socket}
   end
 
   def handle_in("unwatch", %{"room_id" => id}, socket) do
-    {:reply, :ok, PingalServer.Endpoint.unsubscribe("#{id}")}
+     PingalServer.Endpoint.unsubscribe("#{id}")
+    {:noreply, socket}s
   end
 
   
@@ -258,8 +260,8 @@ defmodule PingalServer.RoomChannel do
     })
   end
 
-  def watch_new_rooms(socket, rooms) do
-      Enum.reduce(rooms, socket, 
+  def watch_new_rooms(socket, new_rooms) do
+      Enum.reduce(new_rooms, socket, 
         fn room, acc ->
           rooms = acc.assigns.rooms
           if room in rooms do
