@@ -99,11 +99,11 @@ defmodule PingalServer.RoomChannel do
   end
 
   def handle_in("watch", %{"room_id" => id}, socket) do
-    {:reply, :ok, watch_new_rooms(socket, ["room:#{id}"])}
+    {:reply, :ok, watch_new_rooms(socket, ["#{id}"])}
   end
 
   def handle_in("unwatch", %{"room_id" => id}, socket) do
-    {:reply, :ok, PingalServer.Endpoint.unsubscribe("room:#{id}")}
+    {:reply, :ok, PingalServer.Endpoint.unsubscribe("#{id}")}
   end
 
   
