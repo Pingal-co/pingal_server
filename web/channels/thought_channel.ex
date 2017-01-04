@@ -46,7 +46,7 @@ defmodule PingalServer.ThoughtChannel do
 
   # join the room, record the event
   def join("thought:" <> category, payload, socket) do
-     Logger.debug "#{inspect(payload)}"
+     # Logger.debug "#{inspect(payload)}"
 
     if authorized?(payload) do
       socket = assign(socket, :params, %{category: category})
@@ -73,7 +73,7 @@ defmodule PingalServer.ThoughtChannel do
 
 # add a thought
   def handle_in("add:thought" = event, message, socket) do
-    Logger.debug "event: #{inspect(event)}"
+    # Logger.debug "event: #{inspect(event)}"
     Logger.debug "message: #{inspect message}"
    
     # get user from user_hash or device_info 
@@ -136,7 +136,7 @@ defmodule PingalServer.ThoughtChannel do
     device_info = message["device_info"]
     device_name = device_info["unique_id"]
     user_hash =  message["user_hash"]
-    Logger.debug "name: #{inspect(device_name)}"
+    # Logger.debug "name: #{inspect(device_name)}"
     # user name : can be device_name | email | phone
     # only using device name for testing
     name = device_name
@@ -155,7 +155,7 @@ defmodule PingalServer.ThoughtChannel do
           user_id: user.id,
           geom: %Geo.Point{ coordinates: {latitude, longitude}, srid: 4326}
     }
-    Logger.debug "params: #{inspect(params)}"
+    # Logger.debug "params: #{inspect(params)}"
     # need to be in a Geo Structure
     UserLocation.insert_location(params)
   end
@@ -195,7 +195,7 @@ defmodule PingalServer.ThoughtChannel do
            country: device_info["country"],
 
     }
-    Logger.debug "device params: #{inspect(params)}"
+    # Logger.debug "device params: #{inspect(params)}"
 
     user_device = Device.get_device(params.device)
     cond do
@@ -227,11 +227,11 @@ defmodule PingalServer.ThoughtChannel do
   def get_room(thought) do
     # check if the room of same name or similar rooms exists
 
-    Logger.debug "thought: #{inspect(thought)}"
+    # Logger.debug "thought: #{inspect(thought)}"
     thought_body =  "room:#{thought.user_id}:#{thought.id}" 
-    Logger.debug "thought_body: #{thought_body}"
+    # Logger.debug "thought_body: #{thought_body}"
     name = String.trim(thought.thought)
-     Logger.debug "room_name: #{name}"
+    # Logger.debug "room_name: #{name}"
     # netword_id : I must use machine learning service to assign sub_category_id
     params = %{
       name: name,
@@ -242,14 +242,14 @@ defmodule PingalServer.ThoughtChannel do
       host_id: thought.user_id,
       network_id: 1,
     }
-    Logger.debug "device params: #{inspect(params)}"
+    # Logger.debug "device params: #{inspect(params)}"
     room = Room.get_room(:similar, thought_body)
     cond do
       room == nil or room == [] -> 
-        Logger.debug "no similar room, creating a new room"
+        # Logger.debug "no similar room, creating a new room"
         %{id: room_id, name: room_name} = Room.insert_room(params)
       true -> 
-        Logger.debug "found room"
+        # Logger.debug "found room"
         %{id: room_id, name: room_name} = room
       # false: insert and return a new room id with the thoguht
     end

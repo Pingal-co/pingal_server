@@ -73,7 +73,7 @@ defmodule PingalServer.RoomChannel do
       #rooms = for id <- ids, do: "room:#{id}"
       #socket = socket |> assign(:watch_similar_rooms, []) |> watch_new_rooms(rooms)
       
-      Logger.debug "room:#{inspect(room_id)} message: #{inspect(payload)}"
+      #Logger.debug "room:#{inspect(room_id)} message: #{inspect(payload)}"
       #Logger.debug "rooms:#{inspect(rooms)} ; socket:#{inspect(socket)}"
 
       send(self(),:after_join)
@@ -113,9 +113,9 @@ defmodule PingalServer.RoomChannel do
     # broadcast the slide to all clients;
     # add the user obj and room obj
     # insert when save
-    Logger.debug "event: #{inspect(event)}"
+    #Logger.debug "event: #{inspect(event)}"
 
-    Logger.debug "message: #{inspect message}" 
+    #Logger.debug "message: #{inspect message}" 
     # insert after broadcast in the background
 
     # check if slide needs to be saved in db
