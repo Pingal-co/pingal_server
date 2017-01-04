@@ -263,7 +263,7 @@ defmodule PingalServer.ThoughtChannel do
             acc
           else
             :ok = PingalServer.Endpoint.subscribe(room)
-            assign(acc, :rooms, %{thought.id => [room | rooms]})
+            assign(acc, :rooms, [room | rooms])
           end
         end
       )
