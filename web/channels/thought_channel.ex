@@ -217,10 +217,12 @@ defmodule PingalServer.ThoughtChannel do
 
   def notify_introductions(thought, introductions) do
       # push to all these users
+      Logger.debug "thought: #{inspect(thought)}"
+      Logger.debug "introductions: #{inspect(introductions)}"
     for room <- introductions do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
-        PingalServer.Endpoint.broadcast! "room:" <> room.id, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+        PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
   end
 
