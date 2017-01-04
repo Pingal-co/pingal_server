@@ -95,10 +95,10 @@ defmodule PingalServer.ThoughtChannel do
  
     # let the user watch the introductions chat stream
     socket = socket |> assign(:rooms, []) |> watch_new_rooms(thought, introductions)
-    Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}"
+    Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}, #{inspect socket.assigns.rooms}"
 
     # let introductions watch the user stream.
-    notify_introductions(thought, introductions) 
+    # notify_introductions(thought, introductions) 
 
     # push to socket
     broadcast! socket, event, %{
