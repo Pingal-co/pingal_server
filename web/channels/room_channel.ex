@@ -105,7 +105,7 @@ defmodule PingalServer.RoomChannel do
 
   def handle_in("unwatch", %{"room_id" => id}, socket) do
      PingalServer.Endpoint.unsubscribe("#{id}")
-    {:noreply, socket}s
+    {:noreply, socket}
   end
 
   
