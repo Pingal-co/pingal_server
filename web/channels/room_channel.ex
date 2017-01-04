@@ -99,6 +99,7 @@ defmodule PingalServer.RoomChannel do
   end
 
   def handle_in("watch", %{"room_id" => id}, socket) do
+    Logger.debug "add to watch: #{id}"
     watch_new_rooms(socket, ["#{id}"])
     {:noreply, socket}
   end
