@@ -106,13 +106,13 @@ defmodule PingalServer.RoomChannel do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
        Logger.debug "notifying room: #{room}"
-       #PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+       PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
   end
 
   def handle_in("watch", %{"room_id" => id}, socket) do
     Logger.debug "add to watch: #{id}"
-    PingalServer.Endpoint.subscribe(id)
+    #PingalServer.Endpoint.subscribe(id)
     #watch_new_rooms(socket, ["#{id}"])
     {:noreply, socket}
   end
