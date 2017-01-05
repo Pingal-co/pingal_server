@@ -70,7 +70,13 @@ defmodule PingalServer.ThoughtChannel do
     {:noreply, socket}
   end
 
-
+  def handle_info("watch", %{"room_id" => id}, socket) do
+    Logger.debug "add to watch: #{id}"
+    #PingalServer.Endpoint.subscribe(id)
+    #watch_new_rooms(socket, ["#{id}"])
+    {:noreply, socket}
+  end
+  
 # add a thought
   def handle_in("add:thought" = event, message, socket) do
     # Logger.debug "event: #{inspect(event)}"
@@ -223,7 +229,7 @@ defmodule PingalServer.ThoughtChannel do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
        Logger.debug "notifying room: #{room}"
-       PingalServer.Endpoint.broadcast_from! "room:#{thought.user_id}:#{thought.id}", room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+       PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
     
   end
