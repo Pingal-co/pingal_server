@@ -98,7 +98,7 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}, #{inspect socket.assigns.rooms}"
 
     # let introductions watch the user stream.
-    notify_introductions(thought, introductions) 
+    #notify_introductions(thought, introductions) 
 
     # push to socket
     broadcast! socket, event, %{
@@ -223,7 +223,7 @@ defmodule PingalServer.ThoughtChannel do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
        Logger.debug "notifying room: #{room}"
-       PingalServer.Endpoint.broadcast! room, "watch",  %{"room_id" => "room:#{thought.user_id}:#{thought.id}"}
+       #PingalServer.Endpoint.broadcast! room, "watch",  %{"room_id" => "room:#{thought.user_id}:#{thought.id}"}
     end
     
   end
@@ -267,6 +267,7 @@ defmodule PingalServer.ThoughtChannel do
             acc
           else
             :ok = PingalServer.Endpoint.subscribe(room)
+            PingalServer.Endpoint.broadcast! room, "watch",  %{"room_id" => "room:#{thought.user_id}:#{thought.id}"}
             assign(acc, :rooms, [room | rooms])
           end
         end
