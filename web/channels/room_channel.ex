@@ -98,17 +98,7 @@ defmodule PingalServer.RoomChannel do
     {:noreply, socket}
   end
 
-  def notify_introductions(thought, introductions) do
-      # push to all these users
-      Logger.debug "thought: #{inspect(thought)}"
-      
-    for room <- introductions do
-       # broadcast to an external topic: user channel
-       # broadcast "watch" event to each user channel
-       Logger.debug "notifying room: #{room}"
-       PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
-    end
-  end
+
 
   def handle_in("watch", %{"room_id" => id}, socket) do
     Logger.debug "add to watch: #{id}"

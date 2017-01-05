@@ -98,7 +98,7 @@ defmodule PingalServer.ThoughtChannel do
     Logger.debug "params for #{inspect socket} , #{inspect socket.assigns.params}, #{inspect socket.assigns.rooms}"
 
     # let introductions watch the user stream.
-    PingalServer.RoomChannel.notify_introductions(thought, introductions) 
+    notify_introductions(thought, introductions) 
 
     # push to socket
     broadcast! socket, event, %{
@@ -215,7 +215,17 @@ defmodule PingalServer.ThoughtChannel do
     rooms
   end
 
-  
+  def notify_introductions(thought, introductions) do
+      # push to all these users
+      Logger.debug "thought: #{inspect(thought)}"
+      
+    for room <- introductions do
+       # broadcast to an external topic: user channel
+       # broadcast "watch" event to each user channel
+       Logger.debug "notifying room: #{room}"
+       PingalServer.Endpoint.broadcast_from! "room:#{thought.user_id}:#{thought.id}", room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+    end
+  end
 
   def get_room(thought) do
     # check if the room of same name or similar rooms exists
