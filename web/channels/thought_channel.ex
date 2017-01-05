@@ -223,7 +223,7 @@ defmodule PingalServer.ThoughtChannel do
        # broadcast to an external topic: user channel
        # broadcast "watch" event to each user channel
        Logger.debug "notifying room: #{room}"
-        PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
+        :ok = PingalServer.Endpoint.broadcast! room, "watch",  %{room_id: "room:#{thought.user_id}:#{thought.id}"}
     end
   end
 
