@@ -100,6 +100,13 @@ defmodule PingalServer.RoomChannel do
 
 
 
+  def handle_info("watch", %{"room_id" => id}, socket) do
+    Logger.debug "add to watch: #{id}"
+    #PingalServer.Endpoint.subscribe(id)
+    #watch_new_rooms(socket, ["#{id}"])
+    {:noreply, socket}
+  end
+
   def handle_in("watch", %{"room_id" => id}, socket) do
     Logger.debug "add to watch: #{id}"
     #PingalServer.Endpoint.subscribe(id)
