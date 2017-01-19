@@ -267,7 +267,7 @@ defmodule PingalServer.ThoughtChannel do
             acc
           else
             :ok = PingalServer.Endpoint.subscribe(room)
-            PingalServer.Endpoint.broadcast_from! self(), room, "watch",  %{"room_id" => "room:#{thought.user_id}:#{thought.id}"}
+            PingalServer.Endpoint.broadcast_from! self(), room, "watch_me",  %{"room_id" => "room:#{thought.user_id}:#{thought.id}"}
             assign(acc, :rooms, [room | rooms])
           end
         end
