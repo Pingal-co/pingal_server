@@ -87,7 +87,7 @@ defmodule PingalServer.Room do
   end
 
   def get_room(room) do
-    Repo.get_by(Room, body: room)
+    Repo.get_by(Room, id: room)
   end
 
   def get_room(:name, room) do

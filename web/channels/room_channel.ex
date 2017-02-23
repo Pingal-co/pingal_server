@@ -68,7 +68,7 @@ defmodule PingalServer.RoomChannel do
   def join("room:" <> room_id, payload, socket) do
     # id format: "room:#{thought.user_id}:#{thought.id}"
     if authorized?(payload) do
-      socket = socket |> assign(:roomid, "room:" <> room_id)
+      socket = socket |> assign(:roomid, room_id) # "room:" <> room_id
       #%{"ids" => ids} = payload
       #rooms = for id <- ids, do: "room:#{id}"
       #socket = socket |> assign(:watch_similar_rooms, []) |> watch_new_rooms(rooms)
@@ -123,6 +123,10 @@ defmodule PingalServer.RoomChannel do
     # insert after broadcast in the background
 
     # check if slide needs to be saved in db
+    IO.puts "This is the message vvv"
+    IO.inspect message
+    IO.puts "This is the socket vvv"
+    IO.inspect socket
     message = insert_slide(socket, message)
     Logger.debug "after insert message: #{inspect message}" 
     broadcast! socket, event, message
@@ -249,7 +253,7 @@ defmodule PingalServer.RoomChannel do
 
   def find_room_slides(socket) do
     # get slides from all rooms subscribed by user
-    %{id: room_id} = Room.get_room(:body, socket.assigns.roomid)
+    %{id: room_id} = Room.get_room(socket.assigns.roomid)
     Slide.get_slides(:room, room_id)
   end
 
