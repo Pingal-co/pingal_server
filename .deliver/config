@@ -4,8 +4,8 @@ APP="pingal_server" # name of your release
 
 BUILD_HOST="pingal.ai" # host where to build the release
 BUILD_USER="laser" # local user at build host
-BUILD_AT="/git/pingal_server/builds" # build directory on build host
-RELEASE_DIR="/git/pingal_server/builds/rel/pingal_server"
+BUILD_AT="/home/laser/git/pingal_server/builds" # build directory on build host
+RELEASE_DIR="/home/laser/git/pingal_server/builds/rel/pingal_server"
 RELEASE_VERSION=0.0.1
 
 STAGING_HOSTS="pingal.ai" # staging / test hosts separated by space
