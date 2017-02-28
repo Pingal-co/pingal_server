@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+APP="pingal_server" # name of your release
+
+BUILD_HOST="pingal.ai" # host where to build the release
+BUILD_USER="laser" # local user at build host
+BUILD_AT="/pingal_server/builds" # build directory on build host
+RELEASE_DIR="/pingal_server/builds/rel/pingal_server"
+RELEASE_VERSION=0.0.1
+
+STAGING_HOSTS="pingal.ai" # staging / test hosts separated by space
+STAGING_USER="git" # local user at staging hosts
+TEST_AT="/test/my_awesome_app" # deploy directory on staging hosts. default is DELIVER_TO
+
+PRODUCTION_HOSTS="pingal.ai" # deploy / production hosts separated by space
+PRODUCTION_USER="laser" # local user at deploy hosts
+DELIVER_TO="/opt/pingal_server" # deploy directory on production hosts
