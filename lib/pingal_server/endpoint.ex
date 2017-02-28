@@ -31,7 +31,7 @@ defmodule PingalServer.Endpoint do
   plug Plug.Head
 
   # Allow cross origin for API
-  plug CORSPlug, [origin: "http://localhost:3000"]
+  plug CORSPlug, [origin: "http://pingal.ai"]
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
