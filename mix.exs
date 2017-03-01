@@ -35,7 +35,7 @@ defmodule PingalServer.Mixfile do
      {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
+     {:phoenix_live_reload, "~> 1.0"},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:geo, "~> 1.1"},
@@ -47,7 +47,9 @@ defmodule PingalServer.Mixfile do
      {:uuid, "~> 1.1.2"},
      # {:enm, git: "https://github.com/basho/enm"},
      # {:exns, "~> 0.3.5-beta"},
-     {:mailgun, "~> 0.1.2"}]
+     {:mailgun, "~> 0.1.2"},
+     {:cors_plug, "~> 1.2"},
+     {:edeliver, git: "https://github.com/boldpoker/edeliver.git"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

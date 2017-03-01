@@ -13,8 +13,14 @@ use Mix.Config
 # which you typically run after static files are built.
 config :pingal_server, PingalServer.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/manifest.json"
+  url: [host: "example.com", port: 4010],
+  cache_static_manifest: "priv/static/manifest.json",
+  debug_errors: true,
+  server: true,
+  code_reloader: false,
+  cache_static_lookup: false,
+  check_origin: false,
+  watchers: []
 
 # Do not print debug messages in production
 config :logger, level: :info

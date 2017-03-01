@@ -37,6 +37,7 @@ defmodule PingalServer.Router do
         resources "/thoughts", ThoughtController, except: [:new, :edit]
         resources "/apps", AppController, except: [:new, :edit]
         resources "/slides", SlideController, except: [:new, :edit]
+        resources "/emails", EmailController, only: [:create, :show]
       end
    end
 end
