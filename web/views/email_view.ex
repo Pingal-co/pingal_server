@@ -6,7 +6,7 @@ defmodule PingalServer.EmailView do
   end
 
   def render("show.json", %{email: email}) do
-    %{data: render_one(email, PingalServer.EmailView, "email.json")}
+    render_one(email, PingalServer.EmailView, "email.json")
   end
 
   def render("email.json", %{email: email}) do
