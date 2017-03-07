@@ -40,6 +40,7 @@ defmodule PingalServer.Router do
         
         # Web App Demo 
         resources "/emails", EmailController, only: [:create, :show]
+        post "/emails/apiai", EmailController, :apiai 
         resources "/messages", MessageController, only: [:create, :show]
       end
    end
