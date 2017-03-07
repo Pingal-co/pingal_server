@@ -12,6 +12,9 @@ defmodule PingalServer.EmailView do
   def render("email.json", %{email: email}) do
     %{id: email.id,
       text: email.text,
-      ip: email.ip}
+      ip: email.ip,
+      name: email.name,
+      speech: "Wonderful. Thanks " <> email.name <> "! I'll be in touch soon at " <> email.text <> " :)"
+    }
   end
 end
