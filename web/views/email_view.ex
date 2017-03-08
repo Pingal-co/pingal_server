@@ -13,6 +13,13 @@ defmodule PingalServer.EmailView do
     %{id: email.id,
       text: email.text,
       ip: email.ip,
+    }
+  end
+
+  def render("apiai.json", %{email: email}) do
+    %{id: email.id,
+      text: email.text,
+      ip: email.ip,
       name: email.name,
       speech: "Wonderful. Thanks " <> email.name <> "! I'll be in touch soon at " <> email.text <> " :)"
     }
