@@ -85,7 +85,8 @@ defmodule PingalServer.RoomChannel do
 
   # load room and track and add presence
   def handle_info(:after_join, socket) do
-    slides = find_room_slides(socket)   
+    # newest first
+    slides = Enum.reverse(find_room_slides(socket))   
     #Logger.debug "all slides: #{inspect slides}"
 
     broadcast! socket, "get:slides_in_room", %{slides: slides}
