@@ -19,7 +19,7 @@ defmodule PingalServer.Mixfile do
   def application do
     [mod: {PingalServer, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :tirexs, :comeonin]] # :exns
+                    :phoenix_ecto, :postgrex, :tirexs, :comeonin, :exns]]
   end
 
   # Specifies which paths to compile per environment.
@@ -45,8 +45,8 @@ defmodule PingalServer.Mixfile do
      {:exrm, "~> 1.0"},
      {:msgpax, "~> 0.8.1"},
      {:uuid, "~> 1.1.2"},
-     # {:enm, git: "https://github.com/basho/enm"},
-     # {:exns, "~> 0.3.5-beta"},
+     {:enm, git: "https://github.com/basho/enm"},
+     {:exns, "~> 0.3.5-beta"},
      {:mailgun, "~> 0.1.2"},
      {:cors_plug, "~> 1.2"},
      {:edeliver, git: "https://github.com/boldpoker/edeliver.git"}]
